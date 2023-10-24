@@ -6,6 +6,7 @@ use pocketmine\player\Player;
 use jojoe77777\FormAPI\SimpleForm;
 use pocketmine\item\StringToItemParser;
 use Terpz710\BlueGamesQuest\Main;
+use Terpz710\BlueGamesQuest\EventListener;
 
 class QuestForm {
 
