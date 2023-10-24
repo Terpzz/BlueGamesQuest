@@ -7,6 +7,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\item\StringToItemParser;
+use pocketmine\item\Item;
 
 class EventListener implements Listener {
 
@@ -47,7 +48,9 @@ class EventListener implements Listener {
 
         if ($requiredItem !== null) {
             $requiredItem = StringToItemParser::getInstance()->parse($requiredItem);
-            return $player->getInventory()->contains($requiredItem);
+            if ($requiredItem instanceof Item) {
+                return $player->getInventory()->contains($requiredItem);
+            }
         }
 
         return false;
