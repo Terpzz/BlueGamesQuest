@@ -12,12 +12,15 @@ use Terpz710\BlueGamesQuest\Command\QuestCommand;
 class Main extends PluginBase implements Listener {
 
     private $questConfig;
+    private $eventListener;
 
     public function onEnable(): void {
         $this->saveResource("quest.yml");
         $this->questConfig = new Config($this->getDataFolder() . "quest.yml", Config::YAML);
 
-        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this->questConfig), $this);
+        $this->eventListener = new EventListener($this->questConfig); // Initialize the eventListener
+
+        $this->getServer()->getPluginManager()->registerEvents($this->eventListener, $this);
         $this->getServer()->getCommandMap()->register("quest", new QuestCommand($this));
     }
 
