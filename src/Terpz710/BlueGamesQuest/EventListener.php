@@ -1,70 +1,76 @@
 <?php
 
-namespace Terpz710\BlueGamesQuest;
+namespace Terpz710\BlueGamesQuest\Form;
 
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\player\Player;
-use pocketmine\utils\Config;
-use pocketmine\item\StringToItemParser;
-use pocketmine\item\Item;
+use jojoe77777\FormAPI\SimpleForm;
+use Terpz710\BlueGamesQuest\Main;
 
-class EventListener implements Listener {
+class QuestForm {
 
-    private $questConfig;
+    public static function sendQuestList(Player $player, Main $plugin) {
+        $quests = $plugin->getQuests();
 
-    public function __construct(Config $questConfig) {
-        $this->questConfig = $questConfig;
-    }
-
-    public function onPlayerJoin(PlayerJoinEvent $event) {
-        $player = $event->getPlayer();
-        $this->handleQuests($player);
-    }
-
-    public function handleQuests(Player $player) {
-        $quests = $this->questConfig->get("quests", []);
-
-        foreach ($quests as $questName => $questData) {
-            $rewardString = $questData["reward"];
-            $rewardItem = StringToItemParser::getInstance()->parse($rewardString);
-
-            if ($this->hasCompletedQuest($player, $questName)) {
-                continue;
+        $form = new SimpleForm(function (Player $player, $data) use ($quests, $plugin) {
+            if ($data === null) {
+                return;
             }
 
-            if ($this->hasMetQuestRequirements($player, $questData)) {
-                $player->getInventory()->addItem($rewardItem);
-                $player->sendMessage("You've completed the quest: $questName");
-                $this->markQuestAsCompleted($player, $questName);
+            $questName = $data;
+
+            if (isset($quests[$questName])) {
+                $questDetails = $quests[$questName];
+                self::sendQuestDetails($player, $questName, $questDetails, $plugin);
             }
+        });
+
+        $form->setTitle("Quests");
+        $form->setContent("Select a quest to view details:");
+
+        foreach (array_keys($quests) as $questName) {
+            $form->addButton($quests[$questName]["name"]);
         }
+
+        $form->sendToPlayer($player);
     }
 
-    private function hasMetQuestRequirements(Player $player, $questData) {
-        $questName = $questData["name"];
-        $description = $questData["description"];
-        $requiredItem = $questData["required_item"];
+    public static function sendQuestDetails(Player $player, $questName, $questDetails, Main $plugin) {
+        $description = $questDetails["description"];
+        $reward = $questDetails["reward"];
+        $requiredItem = $questDetails["required_item"];
 
+        $form = new SimpleForm(function (Player $player, $data) use ($questName, $requiredItem, $plugin) {
+            if ($data === null) {
+                return;
+            }
+
+            if ($data === 0) {
+                if (self::hasRequiredItem($player, $requiredItem)) {
+                    self::handleQuestCompletion($player, $questName, $plugin);
+                } else {
+                    $player->sendMessage("You do not have the required items to claim this quest.");
+                }
+            }
+        });
+
+        $form->setTitle("Quest Details: " . $questDetails["name"]);
+        $form->setContent("Description: $description\nReward: $reward");
+
+        $form->addButton("Claim");
+
+        $form->sendToPlayer($player);
+    }
+
+    private static function hasRequiredItem(Player $player, $requiredItem) {
         if ($requiredItem !== null) {
-            $requiredItem = StringToItemParser::getInstance()->parse($requiredItem);
-            if ($requiredItem instanceof Item) {
-                return $player->getInventory()->contains($requiredItem);
-            }
+            $parsedItem = StringToItemParser::getInstance()->parse($requiredItem);
+            return $player->getInventory()->contains($parsedItem);
         }
-
-        return false;
+        return true;
     }
 
-    private function hasCompletedQuest(Player $player, $questName) {
-        $completedQuests = $this->questConfig->get("completed_quests", []);
-        return in_array($questName, $completedQuests);
-    }
-
-    private function markQuestAsCompleted(Player $player, $questName) {
-        $completedQuests = $this->questConfig->get("completed_quests", []);
-        $completedQuests[] = $questName;
-        $this->questConfig->set("completed_quests", $completedQuests);
-        $this->questConfig->save();
+    private static function handleQuestCompletion(Player $player, $questName, Main $plugin) {
+        $player->addTag("Quest: $questName");
+        $plugin->markQuestAsCompleted($player, $questName);
     }
 }
