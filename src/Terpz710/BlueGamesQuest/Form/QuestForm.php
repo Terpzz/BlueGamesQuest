@@ -9,10 +9,6 @@ use Terpz710\BlueGamesQuest\EventListener;
 
 class QuestForm {
 
-    public function __construct(EventListener $eventListener) {
-        $this->eventListener = $eventListener;
-    }
-
     public function sendQuestList(Player $player, array $quests) {
         $form = new SimpleForm(function (Player $player, $data) use ($quests) {
             if ($data === null) {
