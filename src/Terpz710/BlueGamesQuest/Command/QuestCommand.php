@@ -29,3 +29,4 @@ class QuestCommand extends Command {
         return true;
     }
 }
+
