@@ -1,34 +1,31 @@
 <?php
 
-namespace Terpz710\BlueGamesQuest;
+namespace Terpz710\BlueGamesQuest\Command;
 
-use pocketmine\plugin\PluginBase;
-use pocketmine\event\Listener;
-use pocketmine\utils\Config;
-use Terpz710\BlueGamesQuest\EventListener;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\player\Player;
 use Terpz710\BlueGamesQuest\Form\QuestForm;
-use Terpz710\BlueGamesQuest\Command\QuestCommand;
+use Terpz710\BlueGamesQuest\Main;
 
-class Main extends PluginBase implements Listener {
+class QuestCommand extends Command {
 
-    private $questConfig;
-    private $eventListener;
+    private $plugin;
 
-    public function onEnable(): void {
-        $this->saveResource("quest.yml");
-        $this->questConfig = new Config($this->getDataFolder() . "quest.yml", Config::YAML);
-
-        $this->eventListener = new EventListener($this->questConfig);
-
-        $this->getServer()->getPluginManager()->registerEvents($this->eventListener, $this);
-        $this->getServer()->getCommandMap()->register("quest", new QuestCommand($this));
+    public function __construct(Main $plugin) {
+        parent::__construct("quest", "See the list of quests!", "/quest");
+        $this->setPermission("quest.cmd");
+        $this->plugin = $plugin;
     }
 
-    public function getQuests() {
-        return $this->questConfig->get("quests", []);
-    }
-
-    public function getEventListener() {
-        return $this->eventListener;
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
+        if ($sender instanceof Player) {
+            $eventListener = $this->plugin->getEventListener();
+            $questForm = new QuestForm($eventListener);
+            $questForm->sendQuestList($sender, $this->plugin->getQuests());
+        } else {
+            $sender->sendMessage("This command can only be used in-game.");
+        }
+        return true;
     }
 }
