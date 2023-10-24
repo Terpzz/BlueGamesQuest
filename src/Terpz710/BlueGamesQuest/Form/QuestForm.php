@@ -75,7 +75,7 @@ class QuestForm {
     }
 
     private function handleQuestCompletion(Player $player, $questName) {
-        $player->addTag("Quest: $questName");
         $this->eventListener->markQuestAsCompleted($player, $questName);
+        $player->sendMessage("Quest '$questName' has been completed!");
     }
 }
