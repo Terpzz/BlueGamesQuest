@@ -1,3 +1,5 @@
+<?php
+
 namespace Terpz710\BlueGamesQuest\Form;
 
 use pocketmine\player\Player;
