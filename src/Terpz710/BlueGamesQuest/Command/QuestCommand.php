@@ -20,7 +20,7 @@ class QuestCommand extends Command implements CommandExecutor {
         $this->plugin = $plugin;
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
+    public function onCommand(CommandSender $sender, string $commandLabel, array $args): bool {
         if ($sender instanceof Player) {
             QuestForm::sendQuestList($sender, $this->plugin);
         } else {
