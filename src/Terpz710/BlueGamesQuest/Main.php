@@ -27,4 +27,8 @@ class Main extends PluginBase implements Listener {
     public function getQuests() {
         return $this->questConfig->get("quests", []);
     }
+
+    public function getEventListener() {
+        return $this->eventListener;
+    }
 }
