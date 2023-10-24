@@ -1,8 +1,12 @@
 # Made by Terpz710
 quests:
   Quest1:
+    name: Wood
     description: Gather 10 wood
+    required_item: "oak_log, 10"
     reward: "diamond, 64"
   Quest2:
+    name: Miner
     description: Mine 20 iron ore
+    required_item: "iron_ingot, 10"
     reward: "iron_ingot, 32"
