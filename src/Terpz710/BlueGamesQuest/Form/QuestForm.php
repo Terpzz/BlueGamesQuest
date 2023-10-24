@@ -9,8 +9,6 @@ use Terpz710\BlueGamesQuest\EventListener;
 
 class QuestForm {
 
-    private $eventListener;
-
     public function __construct(EventListener $eventListener) {
         $this->eventListener = $eventListener;
     }
