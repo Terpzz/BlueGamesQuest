@@ -1,0 +1,8 @@
+# Made by Terpz710
+quests:
+  Quest1:
+    description: Gather 10 wood
+    reward: "diamond, 64"
+  Quest2:
+    description: Mine 20 iron ore
+    reward: "iron_ingot, 32"
