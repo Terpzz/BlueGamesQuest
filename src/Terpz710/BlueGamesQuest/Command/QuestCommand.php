@@ -20,7 +20,8 @@ class QuestCommand extends Command {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
         if ($sender instanceof Player) {
-            $questForm = new QuestForm($this->plugin->getEventListener());
+            $eventListener = $this->plugin->eventListener;
+            $questForm = new QuestForm($eventListener);
             $questForm->sendQuestList($sender, $this->plugin->getQuests());
         } else {
             $sender->sendMessage("This command can only be used in-game.");
