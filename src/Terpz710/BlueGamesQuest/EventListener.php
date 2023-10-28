@@ -13,9 +13,11 @@ use jojoe77777\FormAPI\CustomForm;
 class EventListener implements Listener {
 
     private $questConfig;
+    private $completedQuestsConfig;
 
-    public function __construct(Config $questConfig) {
+    public function __construct(Config $questConfig, Config $completedQuestsConfig) {
         $this->questConfig = $questConfig;
+        $this->completedQuestsConfig = $completedQuestsConfig;
     }
 
     public function onPlayerJoin(PlayerJoinEvent $event) {
@@ -37,7 +39,6 @@ class EventListener implements Listener {
             if ($this->hasMetQuestRequirements($player, $questData)) {
                 $player->sendMessage("You've completed the quest: $questName");
                 $this->markQuestAsCompleted($player, $questName);
-                // Reward the player
                 $player->getInventory()->addItem($rewardItem);
             }
         }
@@ -60,14 +61,11 @@ class EventListener implements Listener {
     }
 
     private function hasCompletedQuest(Player $player, $questName) {
-        $completedQuests = $this->questConfig->get("completed_quests", []);
-        return in_array($questName, $completedQuests);
+        return $this->completedQuestsConfig->get($questName, false);
     }
 
-    private function markQuestAsCompleted(Player $player, $questName) {
-        $completedQuests = $this->questConfig->get("completed_quests", []);
-        $completedQuests[] = $questName;
-        $this->questConfig->set("completed_quests", $completedQuests);
-        $this->questConfig->save();
+    protected function markQuestAsCompleted(Player $player, $questName) {
+        $this->completedQuestsConfig->set($questName, true);
+        $this->completedQuestsConfig->save();
     }
 }
