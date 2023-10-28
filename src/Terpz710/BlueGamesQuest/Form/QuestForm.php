@@ -52,13 +52,34 @@ class QuestForm {
         $reward = $questDetails["reward"];
         $requiredItem = $questDetails["required_item"];
 
-        $form = new SimpleForm(null);
+        $form = new SimpleForm(function (Player $player, $data) use ($questName, $questDetails, $requiredItem) {
+            if ($data === 0) {
+                if ($this->hasMetQuestRequirements($player, $requiredItem)) {
+                    $this->claimQuest($player, $questName, $questDetails);
+                }
+            }
+        });
 
         $form->setTitle("Quest Details: " . $questDetails["name"]);
         $form->setContent("Description: $description\nReward: $reward");
-
         $form->addButton("Claim", 0, "path/to/image.png");
 
         $form->sendToPlayer($player);
+    }
+
+    private function hasMetQuestRequirements(Player $player, $requiredItem) {
+        if ($requiredItem !== null) {
+            $requiredItem = StringToItemParser::getInstance()->parse($requiredItem);
+            if ($requiredItem instanceof Item) {
+                return $player->getInventory()->contains($requiredItem);
+            }
+        }
+
+        return true;
+    }
+
+    private function claimQuest(Player $player, $questName, $questDetails) {
+        $player->sendMessage("You've completed the quest: $questName");
+        $this->eventListener->markQuestAsCompleted($player, $questName);
     }
 }
