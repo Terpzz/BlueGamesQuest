@@ -64,7 +64,7 @@ class EventListener implements Listener {
         return $this->completedQuestsConfig->get($questName, false);
     }
 
-    protected function markQuestAsCompleted(Player $player, $questName) {
+    public function markQuestAsCompleted(Player $player, $questName) {
         $this->completedQuestsConfig->set($questName, true);
         $this->completedQuestsConfig->save();
     }
