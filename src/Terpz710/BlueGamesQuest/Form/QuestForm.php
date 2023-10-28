@@ -4,6 +4,7 @@ namespace Terpz710\BlueGamesQuest\Form;
 
 use pocketmine\player\Player;
 use jojoe77777\FormAPI\SimpleForm;
+use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use Terpz710\BlueGamesQuest\EventListener;
 
