@@ -80,7 +80,13 @@ class QuestForm {
     }
 
     private function claimQuest(Player $player, $questName, $questDetails) {
+        $reward = $questDetails["reward"];
         $player->sendMessage("You've completed the quest: $questName");
+        $player->sendMessage("Rewards: $reward");
+
+        $rewardItem = StringToItemParser::getInstance()->parse($reward);
+        $player->getInventory()->addItem($rewardItem);
+
         $this->eventListener->markQuestAsCompleted($player, $questName);
     }
 }
