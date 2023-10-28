@@ -9,11 +9,17 @@ use Terpz710\BlueGamesQuest\EventListener;
 
 class QuestForm {
 
+    private $eventListener;
+
     public function setEventListener(EventListener $eventListener) {
         $this->eventListener = $eventListener;
     }
 
     public function sendQuestList(Player $player, array $quests) {
+        if ($this->eventListener === null) {
+            return;
+        }
+
         $form = new SimpleForm(function (Player $player, $data) use ($quests) {
             if ($data === null) {
                 return;
@@ -38,6 +44,10 @@ class QuestForm {
     }
 
     public function sendQuestDetails(Player $player, $questName, $questDetails) {
+        if ($this->eventListener === null) {
+            return;
+        }
+
         $description = $questDetails["description"];
         $reward = $questDetails["reward"];
         $requiredItem = $questDetails["required_item"];
