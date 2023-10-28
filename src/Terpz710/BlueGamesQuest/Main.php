@@ -18,10 +18,10 @@ class Main extends PluginBase implements Listener {
         $this->saveResource("quest.yml");
         $this->questConfig = new Config($this->getDataFolder() . "quest.yml", Config::YAML);
 
-        $this->eventListener = new EventListener($this->questConfig); // Initialize the eventListener
+        $this->eventListener = new EventListener($this->questConfig);
 
         $this->getServer()->getPluginManager()->registerEvents($this->eventListener, $this);
-        $this->getServer()->getCommandMap()->register("quest", new QuestCommand($this));
+        $this->getServer()->getCommandMap()->register("quest", new QuestCommand($this, $this->getEventListener()));
     }
 
     public function getQuests() {
