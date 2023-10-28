@@ -10,11 +10,9 @@ use Terpz710\BlueGamesQuest\EventListener;
 class QuestForm {
 
     private $eventListener;
-    private $plugin;
 
-    public function __construct(EventListener $eventListener, Main $plugin) {
+    public function __construct(EventListener $eventListener) {
         $this->eventListener = $eventListener;
-        $this->plugin = $plugin;
     }
 
     public function sendQuestList(Player $player, array $quests) {
