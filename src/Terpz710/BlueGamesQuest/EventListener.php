@@ -8,6 +8,7 @@ use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\Item;
+use jojoe77777\FormAPI\CustomForm;
 
 class EventListener implements Listener {
 
@@ -34,26 +35,28 @@ class EventListener implements Listener {
             }
 
             if ($this->hasMetQuestRequirements($player, $questData)) {
-                $player->getInventory()->addItem($rewardItem);
                 $player->sendMessage("You've completed the quest: $questName");
                 $this->markQuestAsCompleted($player, $questName);
+                // Reward the player
+                $player->getInventory()->addItem($rewardItem);
             }
         }
     }
 
     private function hasMetQuestRequirements(Player $player, $questData) {
-        $questName = $questData["name"];
-        $description = $questData["description"];
         $requiredItem = $questData["required_item"];
 
         if ($requiredItem !== null) {
             $requiredItem = StringToItemParser::getInstance()->parse($requiredItem);
             if ($requiredItem instanceof Item) {
-                return $player->getInventory()->contains($requiredItem);
+                if ($player->getInventory()->contains($requiredItem)) {
+                    return true;
+                }
             }
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     private function hasCompletedQuest(Player $player, $questName) {
