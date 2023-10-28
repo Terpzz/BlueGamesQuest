@@ -26,7 +26,7 @@ class QuestForm {
                 return;
             }
 
-            $questName = $data;
+            $questName = array_keys($quests)[$data]; // Get the quest name from the selected button
 
             if (isset($quests[$questName])) {
                 $questDetails = $quests[$questName];
@@ -37,8 +37,8 @@ class QuestForm {
         $form->setTitle("Quests");
         $form->setContent("Select a quest to view details:");
 
-        foreach (array_keys($quests) as $questName) {
-            $form->addButton($quests[$questName]["name"]);
+        foreach ($quests as $questName => $questData) {
+            $form->addButton($questData["name"]);
         }
 
         $form->sendToPlayer($player);
