@@ -57,6 +57,8 @@ class QuestForm {
             if ($data === 0) {
                 if ($this->hasMetQuestRequirements($player, $requiredItem)) {
                     $this->claimQuest($player, $questName, $questDetails);
+                } else {
+                    $player->sendMessage("You don't have the required items to complete this quest.");
                 }
             }
         });
