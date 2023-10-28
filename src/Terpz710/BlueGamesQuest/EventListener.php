@@ -38,8 +38,10 @@ class EventListener implements Listener {
 
             if ($this->hasMetQuestRequirements($player, $questData)) {
                 $player->sendMessage("You've completed the quest: $questName");
-                $this->markQuestAsCompleted($player, $questName);
+                $player->sendMessage("Rewards: $rewardString");
+
                 $player->getInventory()->addItem($rewardItem);
+                $this->markQuestAsCompleted($player, $questName);
             }
         }
     }
