@@ -26,7 +26,7 @@ class QuestForm {
                 return;
             }
 
-            $questName = array_keys($quests)[$data]; // Get the quest name from the selected button
+            $questName = array_keys($quests)[$data];
 
             if (isset($quests[$questName])) {
                 $questDetails = $quests[$questName];
