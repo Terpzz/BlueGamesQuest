@@ -12,6 +12,7 @@ use Terpz710\BlueGamesQuest\EventListener;
 class QuestCommand extends Command {
 
     private $plugin;
+    private $eventListener;
 
     public function __construct(Main $plugin, EventListener $eventListener) {
         parent::__construct("quest", "See the list of quests!", "/quest");
